@@ -15,18 +15,25 @@ class ProfileScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      body: Center(
+      body: user == null
+          ? const Center(child: Text('Brak danych użytkownika'))
+          : Padding(
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Mój profil',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            Text('ID: ${user['id']}'),
+            Text('Imię: ${user['name']}'),
+            Text('Nazwisko: ${user['surname']}'),
             Text('Email: ${user['email']}'),
+            Text('Płeć: ${user['gender'] == 0 ? 'Kobieta' : 'Mężczyzna'}'),
+            Text('Data urodzenia: ${user['birthdate']}'),
+            Text('Telefon: ${user['phoneNumber']}'),
+            Text('Numer karty: ${user['cardNumber']}'),
+            Text('Student: ${user['isStudent'] == 1 ? 'Tak' : 'Nie'}'),
           ],
         ),
       ),
     );
+
   }
 }

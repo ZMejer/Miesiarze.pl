@@ -23,13 +23,25 @@ class DatabaseHelper {
   Future _createDB(Database db, int version) async {
     const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     const textType = 'TEXT NOT NULL';
+    const intType = 'INTEGER NOT NULL';
+    const nullableText = 'TEXT';
 
-    await db.execute('''CREATE TABLE users (
-        id $idType,
-        email $textType,
-        password $textType
-      )''');
+    await db.execute('''
+    CREATE TABLE users (
+      id $idType,
+      email $textType,
+      password $textType,
+      name $textType,
+      surname $textType,
+      gender $intType,       
+      birthdate $textType,    
+      phoneNumber $nullableText,
+      cardNumber $nullableText,
+      isStudent $intType  
+    )
+  ''');
   }
+
 
   Future<void> insertUser(Map<String, dynamic> row) async {
     final db = await instance.database;

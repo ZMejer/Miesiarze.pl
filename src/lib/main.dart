@@ -60,21 +60,21 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.home),
+              leading: const Icon(Icons.description),
               title: const Text('Dokumenty'),
               onTap: () {
                 setState(() {
-                  _currentIndex = 0; // Przejście do ekranu Dokumentów
+                  _currentIndex = 0;
                 });
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              leading: const Icon(Icons.search),
+              leading: const Icon(Icons.assignment_turned_in),
               title: const Text('Rejestr'),
               onTap: () {
                 setState(() {
-                  _currentIndex = 1; // Przejście do ekranu Rejestru
+                  _currentIndex = 1;
                 });
                 Navigator.pop(context);
               },
@@ -84,7 +84,7 @@ class _MainScreenState extends State<MainScreen> {
               title: const Text('Profil'),
               onTap: () {
                 setState(() {
-                  _currentIndex = 2; // Przejście do ekranu Profilu
+                  _currentIndex = 2;
                 });
                 Navigator.pop(context);
               },
@@ -97,7 +97,7 @@ class _MainScreenState extends State<MainScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.login),
+              leading: const Icon(Icons.app_registration),
               title: const Text('Rejestracja'),
               onTap: () {
                 Navigator.pushNamed(context, '/register');
@@ -105,7 +105,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
             const Spacer(),
             ListTile(
-              leading: const Icon(Icons.exit_to_app),
+              leading: const Icon(Icons.logout),
               title: const Text('Wyloguj się'),
               onTap: () {
                 AuthService.logout();
@@ -129,11 +129,11 @@ class _MainScreenState extends State<MainScreen> {
         onTap: (index) => setState(() => _currentIndex = index),
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.description),
             label: 'Dokumenty',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
+            icon: Icon(Icons.assignment_turned_in),
             label: 'Rejestr',
           ),
           BottomNavigationBarItem(

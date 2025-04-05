@@ -1,6 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'database_helper.dart';
-import 'main.dart';
+import 'package:http/http.dart' as http;
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -36,15 +36,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    final existingUser = await DatabaseHelper.instance.getUser(email, password);
-    if (existingUser != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Użytkownik już istnieje')),
-      );
-      return;
-    }
-
-    await DatabaseHelper.instance.insertUser({
+    final url = Uri.parse('http://10.0.2.2:90/register.php');
+    final response = await http.post(url, body: {
       'email': email,
       'password': password,
       'name': name,
@@ -53,15 +46,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
       'birthdate': birthdate,
       'phoneNumber': phoneNumber,
       'cardNumber': cardNumber,
-      'isStudent': _isStudent ? 1 : 0,
+      'isStudent': _isStudent ? '1' : '0',
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Rejestracja udana')),
-    );
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
 
-    Navigator.pushReplacementNamed(context, '/login');
+    final data = json.decode(response.body);
+
+    if (response.statusCode == 200 && data['status'] == 'success') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Rejestracja udana')),
+      );
+      Navigator.pushReplacementNamed(context, '/login');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(data['message'] ?? 'Błąd rejestracji')),
+      );
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -99,11 +103,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             const SizedBox(height: 20),
             ElevatedButton(onPressed: _register, child: const Text('Zarejestruj się')),
             TextButton(
-              onPressed: () => Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => MainScreen()),
-                    (Route<dynamic> route) => false,
-              ),
+              onPressed: () => Navigator.pushReplacementNamed(context, '/login'),
               child: const Text('Wróć do ekranu głównego'),
             ),
           ],

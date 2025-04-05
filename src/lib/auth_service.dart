@@ -1,4 +1,5 @@
-import 'database_helper.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class AuthService {
   static bool _isLoggedIn = false;
@@ -13,12 +14,20 @@ class AuthService {
   }
 
   static Future<bool> login(String email, String password) async {
-    final user = await DatabaseHelper.instance.getUser(email, password);
-    if (user != null) {
+    final url = Uri.parse('http://10.0.2.2:90/login.php');
+    final response = await http.post(url, body: {
+      'email': email,
+      'password': password,
+    });
+
+    final data = json.decode(response.body);
+
+    if (response.statusCode == 200 && data['status'] == 'success') {
       _isLoggedIn = true;
-      _currentUser = user;
+      _currentUser = data['user'];
       return true;
     }
+
     return false;
   }
 

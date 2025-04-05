@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'auth_service.dart';
 
 class DocumentsScreen extends StatelessWidget {
-  final String firstName = "Jan";
-  final String lastName = "Kowalski";
-
   @override
   Widget build(BuildContext context) {
-    String userProfileUrl = "https://httpbin.org/get?firstName=$firstName&lastName=$lastName";
+    final user = AuthService.getCurrentUser();
+
+    if (user == null) {
+      return Scaffold(
+        body: Center(child: Text('Brak danych użytkownika')),
+      );
+    }
+
+    String userProfileUrl = "http://192.168.34.12:90/license.php?firstName=${user['name']}&lastName=${user['surname']}";
 
     return Scaffold(
-      appBar: AppBar(title: const Text('QR Code Example')),
       body: Center(
         child: QrImageView(
           data: userProfileUrl,

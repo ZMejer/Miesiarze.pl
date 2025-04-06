@@ -4,7 +4,7 @@ class ReportsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text('Rejest połowu'),
+      child: Text('Rejestr połowu'),
     );
   }
 }

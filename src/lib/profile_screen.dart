@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'auth_service.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -10,6 +15,34 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  File? _imageFile;
+  final picker = ImagePicker();
+
+
+  Future<void> _pickImage() async {
+    final plugin = DeviceInfoPlugin();
+    final android = await plugin.androidInfo;
+
+    final storageStatus = android.version.sdkInt < 33
+        ? await Permission.storage.request()
+        : await Permission.photos.request();
+
+    if (storageStatus == PermissionStatus.granted) {
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          _imageFile = File(pickedFile.path);
+        });
+      }
+    } else if (storageStatus == PermissionStatus.denied) {
+      print("denied");
+    } else if (storageStatus == PermissionStatus.permanentlyDenied) {
+      await openAppSettings();
+    }
+  }
+
+
+
 
   @override
   void initState() {
@@ -22,6 +55,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
     _tabController.dispose();
     super.dispose();
   }
+
+  File ? _selectedImage;
 
   @override
   Widget build(BuildContext context) {
@@ -162,11 +197,51 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                       ),
                       Padding(
                         padding: const EdgeInsets.all(16),
-                        child: Text(
-                          'GALERIA',
-                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Dodaj zdjęcie',
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 16),
+                            ElevatedButton.icon(
+                              onPressed: (){
+                                _pickImage();
+                                },
+                                icon: Icon(Icons.upload_file),
+                                label: Text('Wgraj zdjęcie'),
+                                ),
+                                const SizedBox(height: 16),
+                                if (_imageFile != null)
+                                Column(
+                                children: [
+                                Image.file(
+                                _imageFile!,
+                                height: 200,
+                                ),
+                                const SizedBox(height: 16),
+                                ],
+                                ),
+                                TextField(
+                                decoration: InputDecoration(
+                                labelText: 'Opis zdjęcia',
+                                border: OutlineInputBorder(),
+                                ),
+                                maxLines: 3,
+                                ),
+                                const SizedBox(height: 16),
+
+                            ElevatedButton(
+                              onPressed: () {
+                                // TODO: logika wysyłania zdjęcia i opisu
+                              },
+                              child: Text('Wyślij'),
+                            ),
+                          ],
                         ),
                       ),
+                      _selectedImage != null ? Image.file(_selectedImage!) : const Text("XD")
                     ],
                   ),
                 ),

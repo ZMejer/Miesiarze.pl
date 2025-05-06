@@ -5,6 +5,7 @@ import 'profile_screen.dart';
 import 'login_screen.dart';
 import 'register_screen.dart';
 import 'auth_service.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(MyApp());
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
         '/': (_) => MainScreen(),
         '/login': (_) => const LoginScreen(),
         '/register': (_) => const RegisterScreen(),
+        '/documents': (_) => const DocumentsScreen(),
       },
     );
   }
@@ -44,8 +46,37 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mięsiarze.pl'),
+        leading: Builder(
+          builder: (context) => Padding(
+            padding: const EdgeInsets.only(left: 20.0, top: 20.0), // Przesunięcie ikony w prawo (odstęp od lewej krawędzi)
+            child: IconButton(
+              icon: Icon(
+                Icons.arrow_back_ios,
+                size: 27.0, // Powiększenie ikony
+                color: Colors.white,
+              ),
+              onPressed: () => Scaffold.of(context).openDrawer(),
+            ),
+          ),
+        ),
+        backgroundColor: Color(0xFF1A263E),
+        toolbarHeight: 130,
+        centerTitle: true,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 30), // przesunięcie w dół
+          child: Text(
+            'Mięsiarze.pl',
+            style: GoogleFonts.lato(
+              textStyle: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 26,
+              ),
+            ),
+          ),
+        ),
       ),
+
       drawer: Drawer(
         child: Column(
           children: [

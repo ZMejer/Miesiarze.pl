@@ -1,8 +1,27 @@
 import 'package:flutter/material.dart';
 import 'auth_service.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,94 +33,150 @@ class ProfileScreen extends StatelessWidget {
       );
     }
 
-    // Definiowanie koloru obramowania wokół CircleAvatar
-    const Color avatarBorderColor = Color(0xFFF7F2FA); // Kolor #f7f2fa
-    const Color profileBackgroundColor = Color(0xFF1A263E); // Kolor tła niebieskiego
+    const Color avatarBorderColor = Color(0xFFF7F2FA);
+    const Color profileBackgroundColor = Color(0xFF1A263E);
+    const Color themeColor = Color(0xFF1A263E);
 
     return Scaffold(
-      backgroundColor: Colors.grey[200],
-      body: Stack(
+      body: Column(
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: 140,
-                width: double.infinity,
-                color: profileBackgroundColor,
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 40), // odstęp pod „Profil”
-                      Text('Imię: ${user['name']}'),
-                      Text('Nazwisko: ${user['surname']}'),
-                      Text('Email: ${user['email']}'),
-                      Text('Płeć: ${user['gender'] == 0 ? 'Kobieta' : 'Mężczyzna'}'),
-                      Text('Data urodzenia: ${user['birthdate']}'),
-                      Text('Telefon: ${user['phone_number']}'),
-                      Text('Numer karty: ${user['card_number']}'),
-                      Text('Student: ${user['is_student'] == 1 ? 'Tak' : 'Nie'}'),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          // Prostokąt z napisem z imieniem użytkownika
-          Positioned(
-            top: 50, // Ustawiamy początek prostokąta tuż pod kółkiem
-            left: 20,
-            right: 20,
-            height: 140,
-            child: Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 25),
-                alignment: Alignment.center,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end, // Wyrównanie tekstu do dołu
+          // Główna sekcja z informacjami o użytkowniku
+          Expanded(
+            child: Stack(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      '${user['name']} ${user['surname']}', // Zmieniony na dynamiczne imię
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
+                    Container(
+                      height: 140,
+                      width: double.infinity,
+                      color: profileBackgroundColor,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
                       ),
                     ),
                   ],
                 ),
-              ),
+                Positioned(
+                  top: 50,
+                  left: 20,
+                  right: 20,
+                  height: 140,
+                  child: Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 25),
+                      alignment: Alignment.center,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            '${user['name']} ${user['surname']}',
+                            style: TextStyle(
+                              color: themeColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 0,
+                  left: MediaQuery.of(context).size.width / 2 - 60,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: avatarBorderColor,
+                    ),
+                    padding: const EdgeInsets.all(8),
+                    child: CircleAvatar(
+                      radius: 55,
+                      backgroundImage: NetworkImage(
+                        'https://www.w3schools.com/w3images/avatar2.png',
+                      ),
+                      backgroundColor: Colors.transparent,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          // Kółko z wyższym z-indexem (później w kodzie, dlatego ma wyższy z-index)
-          Positioned(
-            top: 0, // Przesuwamy kółko wyżej, aby było nad paskiem
-            left: MediaQuery.of(context).size.width / 2 - 60, // Wyśrodkowanie kółka
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: avatarBorderColor, // Biały kolor z #f7f2fa
-              ),
-              padding: const EdgeInsets.all(8), // Odstęp wewnętrzny, aby zrobić efekt border
-              child: CircleAvatar(
-                radius: 55, // Rozmiar okręgu
-                backgroundImage: NetworkImage(
-                  'https://www.w3schools.com/w3images/avatar2.png',
+
+          // Określamy wysokość dla TabBar + TabBarView razem
+          Container(
+            height: 510, // Określona wysokość dla TabBar i TabBarView razem
+            child: Column(
+              children: [
+                // TabBar
+                Container(
+                  height: 50, // Wysokość TabBar
+                  child: TabBar(
+                    splashFactory: NoSplash.splashFactory,
+                    overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                            (Set<MaterialState> states) {
+                          // Use the default focused overlay color
+                          return states.contains(MaterialState.focused) ? null : Colors.transparent;
+                        }
+                    ),
+                    dividerColor: Colors.transparent,
+                    controller: _tabController,
+                    tabs: const [
+                      Tab(text: 'Dane osobowe'),
+                      Tab(text: 'Galeria ryb'),
+                    ],
+                    indicatorColor: themeColor,
+                    labelColor: themeColor,
+                    unselectedLabelStyle: TextStyle(
+                      color: themeColor.withOpacity(0.6),
+                    ),
+                  ),
                 ),
-                backgroundColor: Colors.transparent,
-              ),
+                // TabBarView
+                Expanded(
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Imię: ${user['name']}'),
+                            Text('Nazwisko: ${user['surname']}'),
+                            Text('Email: ${user['email']}'),
+                            Text('Płeć: ${user['gender'] == 0 ? 'Kobieta' : 'Mężczyzna'}'),
+                            Text('Data urodzenia: ${user['birthdate']}'),
+                            Text('Telefon: ${user['phone_number']}'),
+                            Text('Numer karty: ${user['card_number']}'),
+                            Text('Student: ${user['is_student'] == 1 ? 'Tak' : 'Nie'}'),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Text(
+                          'GALERIA',
+                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ],
       ),
     );
+
+
   }
 }

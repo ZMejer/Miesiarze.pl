@@ -48,11 +48,11 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         leading: Builder(
           builder: (context) => Padding(
-            padding: const EdgeInsets.only(left: 20.0, top: 20.0), // Przesunięcie ikony w prawo (odstęp od lewej krawędzi)
+            padding: const EdgeInsets.only(left: 20.0, top: 20.0),
             child: IconButton(
               icon: Icon(
                 Icons.arrow_back_ios,
-                size: 27.0, // Powiększenie ikony
+                size: 27.0,
                 color: Colors.white,
               ),
               onPressed: () => Scaffold.of(context).openDrawer(),
@@ -63,7 +63,7 @@ class _MainScreenState extends State<MainScreen> {
         toolbarHeight: 130,
         centerTitle: true,
         title: Padding(
-          padding: const EdgeInsets.only(top: 30), // przesunięcie w dół
+          padding: const EdgeInsets.only(top: 30),
           child: Text(
             'Mięsiarze.pl',
             style: GoogleFonts.lato(
@@ -76,7 +76,6 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
       ),
-
       drawer: Drawer(
         child: Column(
           children: [
@@ -150,25 +149,39 @@ class _MainScreenState extends State<MainScreen> {
           ],
         ),
       ),
-
       body: IndexedStack(
         index: _currentIndex,
         children: _screens,
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Color(0xFF1A263E),
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
-        items: const [
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white.withOpacity(0.6),
+        showUnselectedLabels: true,
+        selectedFontSize: 16.0,
+        unselectedFontSize: 14.0,
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.description),
+            icon: Icon(
+              Icons.description,
+              size: 30.0,
+            ),
             label: 'Dokumenty',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.assignment_turned_in),
+            icon: Icon(
+              Icons.assignment_turned_in,
+              size: 30.0,
+            ),
             label: 'Rejestr',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(
+              Icons.person,
+              size: 30.0,
+            ),
             label: 'Profil',
           ),
         ],

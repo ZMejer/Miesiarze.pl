@@ -68,8 +68,6 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Błąd: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('Brak zezwoleń'));
           }
 
           final permits = snapshot.data!;

@@ -6,8 +6,10 @@ import 'login_screen.dart';
 import 'register_screen.dart';
 import 'auth_service.dart';
 import 'package:google_fonts/google_fonts.dart';
+//import 'package:flutter/rendering.dart';
 
 void main() {
+  //debugPaintSizeEnabled = false;
   runApp(MyApp());
 }
 
